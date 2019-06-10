@@ -25,6 +25,7 @@ RUN apk del curl && \
     rm -rf /tmp/* /var/cache/apk/*
 
 COPY ./configs/* /opt/tomcat/conf/
+COPY ./configs/web_context.xml /opt/tomcat/webapps/manager/META-INF/context.xml
 
 WORKDIR /opt/tomcat
 EXPOSE 8080
