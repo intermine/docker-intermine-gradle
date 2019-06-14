@@ -1,0 +1,49 @@
+version: "3"
+services:
+  intermine_builder:
+    container_name: intermine_builder
+    build:
+      context: ./intermine_builder
+      dockerfile: ./intermine_builder.Dockerfile
+    volumes:
+      - ./data/mine/data:/home/intermine/intermine/data
+      - ./data/mine/configs:/home/intermine/intermine/configs
+    environment:
+      - MINE_NAME=${MINE_NAME}
+    depends_on: 
+      - postgres
+      - solr
+
+  postgres:
+    container_name: intermine_postgres
+    build:
+      context: ./postgres
+      dockerfile: ./postgres.Dockerfile
+    volumes:
+      - ./data/postgres:/var/lib/postgresql/data
+
+  solr:
+    container_name: intermine_solr
+    build:
+      context: ./solr
+      dockerfile: ./solr.Dockerfile
+    volumes:
+      - ./data/solr:/opt/solr/server/solr/mycores
+
+  tomcat:
+    container_name: intermine_tomcat
+    build:
+      context: ./tomcat
+      dockerfile: ./tomcat.Dockerfile
+    depends_on: 
+      - intermine_builder
+      - postgres
+      - solr
+    ports:
+      - ${TOMCAT_HOST_PORT:-9999}:${TOMCAT_PORT:-8080}
+
+# volumes:
+#   PostgresDBData:
+#   SolrDBData:
+#   MineData:
+#   MineConfigs:
