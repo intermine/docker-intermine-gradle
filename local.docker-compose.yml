@@ -13,6 +13,7 @@ services:
     depends_on: 
       - postgres
       - solr
+      - tomcat
 
   postgres:
     container_name: intermine_postgres
@@ -35,10 +36,6 @@ services:
     build:
       context: ./tomcat
       dockerfile: ./tomcat.Dockerfile
-    depends_on: 
-      - intermine_builder
-      - postgres
-      - solr
     ports:
       - ${TOMCAT_HOST_PORT:-9999}:${TOMCAT_PORT:-8080}
 
