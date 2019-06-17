@@ -11,7 +11,7 @@ Docker for InterMine
 docker-compose -f local.docker-compose.yml up --build
 ```
 
-### Pull images from Dokcer Hub and start mine
+### Pull images from Docker Hub and start mine
 ```bash
 docker-compose -f dockerhub.docker-compose.yml up 
 ```
