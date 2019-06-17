@@ -29,7 +29,7 @@ services:
       context: ./solr
       dockerfile: ./solr.Dockerfile
     volumes:
-      - ./data/solr:/opt/solr/server/solr/mycores
+      - ./data/solr:/var/solr
 
   tomcat:
     container_name: intermine_tomcat
