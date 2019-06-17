@@ -1,0 +1,23 @@
+#!/bin/bash
+set -eo pipefail
+
+host="$(PGHOST:-postgres)"
+port="$(PGPORT:-5432)"
+user="${PSQL_USER:-postgres}"
+db="${MINE_NAME:-biotestmine}"
+export PGPASSWORD="${PSQL_PWD:-postgres}"
+
+args=(
+	# force postgres to not use the local unix socket (test "external" connectibility)
+	--host "$host"
+    --port "$port"
+	--username "$user"
+	--dbname "$db"
+	--quiet --no-align --tuples-only
+)
+
+if select="$(echo 'SELECT 1' | psql "${args[@]}")" && [ "$select" = '1' ]; then
+	exit 0
+fi
+
+exit 1
