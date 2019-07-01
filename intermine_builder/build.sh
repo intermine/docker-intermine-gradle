@@ -9,54 +9,79 @@ echo "" > /home/intermine/intermine/build.progress
 
 
 # Check if mine exists
-if [ ! -d biotestmine ]; then
+if [ ! -d ${MINE_NAME:-biotestmine} ]; then
     echo "$(date +%Y/%m/%d-%H:%M) Clone biotestmine" >> /home/intermine/intermine/build.progress
-    git clone https://github.com/intermine/biotestmine
-    echo "$(date +%Y/%m/%d-%H:%M) Update keyword_search.properties to use http://solr" >> /home/intermine/intermine/build.progress
-    sed -i "s/localhost/solr/g" ./biotestmine/dbmodel/resources/keyword_search.properties
+    if [ ! -z "$MINE_URL"]; then
+        git clone ${MINE_URL} $MINE_NAME
+        echo "$(date +%Y/%m/%d-%H:%M) Update keyword_search.properties to use http://solr" >> /home/intermine/intermine/build.progress
+        sed -i "s/localhost/solr/g" ./$MINE_NAME/dbmodel/resources/keyword_search.properties
+    else
+        git clone https://github.com/intermine/biotestmine
+        echo "$(date +%Y/%m/%d-%H:%M) Update keyword_search.properties to use http://solr" >> /home/intermine/intermine/build.progress
+        sed -i "s/localhost/solr/g" ./biotestmine/dbmodel/resources/keyword_search.properties
+    fi
 else
     echo "$(date +%Y/%m/%d-%H:%M) Update biotestmine to newest version" >> /home/intermine/intermine/build.progress
-    cd biotestmine
-    git pull
+    cd ${MINE_NAME:-biotestmine}
+    # git pull
     cd /home/intermine/intermine
 fi
 
-if [ ! -f /home/intermine/.intermine/biotestmine.properties ]; then
-    echo "$(date +%Y/%m/%d-%H:%M) Copy biotestmine.properties to ~/.intermine/biotestmine.properties" >> /home/intermine/intermine/build.progress
-    cp /home/intermine/intermine/biotestmine/data/biotestmine.properties /home/intermine/.intermine/
+# Copy mine properties
+if [ ! -f /home/intermine/.intermine/${MINE_NAME:-biotestmine}.properties ]; then
+    echo "$(date +%Y/%m/%d-%H:%M) Copy ${MINE_NAME:-biotestmine}.properties to ~/.intermine/${MINE_NAME:-biotestmine}.properties" >> /home/intermine/intermine/build.progress
+    cp /home/intermine/intermine/${MINE_NAME:-biotestmine}/data/${MINE_NAME:-biotestmine}.properties /home/intermine/.intermine/
 
-    echo -e "$(date +%Y/%m/%d-%H:%M) Set properties in .intermine/biotestmine.properties to\nPSQL_DB_NAME\tbiotestmine\nPSQL_USER\t$PSQL_USER\nPSQL_PWD\t$PSQL_PWD\nTOMCAT_USER\t$TOMCAT_USER\nTOMCAT_PWD\t$TOMCAT_PWD" >> /home/intermine/intermine/build.progress
+    echo -e "$(date +%Y/%m/%d-%H:%M) Set properties in .intermine/${MINE_NAME:-biotestmine}.properties to\nPSQL_DB_NAME\tbiotestmine\nPSQL_USER\t$PSQL_USER\nPSQL_PWD\t$PSQL_PWD\nTOMCAT_USER\t$TOMCAT_USER\nTOMCAT_PWD\t$TOMCAT_PWD" >> /home/intermine/intermine/build.progress
 
-    #sed -i "s/PSQL_PORT/$PGPORT/g" /home/intermine/.intermine/biotestmine.properties
-    sed -i "s/PSQL_DB_NAME/${MINE_NAME:-biotestmine}/g" /home/intermine/.intermine/biotestmine.properties
-    sed -i "s/PSQL_USER/${PSQL_USER:-postgres}/g" /home/intermine/.intermine/biotestmine.properties
-    sed -i "s/PSQL_PWD/${PSQL_PWD:-postgres}/g" /home/intermine/.intermine/biotestmine.properties
-    sed -i "s/TOMCAT_USER/${TOMCAT_USER:-tomcat}/g" /home/intermine/.intermine/biotestmine.properties
-    sed -i "s/TOMCAT_PWD/${TOMCAT_PWD:-tomcat}/g" /home/intermine/.intermine/biotestmine.properties
-    sed -i "s/webapp.deploy.url=http:\/\/localhost:8080/webapp.deploy.url=http:\/\/tomcat:${TOMCAT_PORT:-8080}/g" /home/intermine/.intermine/biotestmine.properties
-    sed -i "s/serverName=localhost/serverName=postgres:${PGPORT:-5432}/g" /home/intermine/.intermine/biotestmine.properties
+    #sed -i "s/PSQL_PORT/$PGPORT/g" /home/intermine/.intermine/${MINE_NAME:-biotestmine}.properties
+    sed -i "s/PSQL_DB_NAME/${MINE_NAME:-biotestmine}/g" /home/intermine/.intermine/${MINE_NAME:-biotestmine}.properties
+    sed -i "s/PSQL_USER/${PSQL_USER:-postgres}/g" /home/intermine/.intermine/${MINE_NAME:-biotestmine}.properties
+    sed -i "s/PSQL_PWD/${PSQL_PWD:-postgres}/g" /home/intermine/.intermine/${MINE_NAME:-biotestmine}.properties
+    sed -i "s/TOMCAT_USER/${TOMCAT_USER:-tomcat}/g" /home/intermine/.intermine/${MINE_NAME:-biotestmine}.properties
+    sed -i "s/TOMCAT_PWD/${TOMCAT_PWD:-tomcat}/g" /home/intermine/.intermine/${MINE_NAME:-biotestmine}.properties
+    sed -i "s/webapp.deploy.url=http:\/\/localhost:8080/webapp.deploy.url=http:\/\/tomcat:${TOMCAT_PORT:-8080}/g" /home/intermine/.intermine/${MINE_NAME:-biotestmine}.properties
+    sed -i "s/serverName=localhost/serverName=postgres:${PGPORT:-5432}/g" /home/intermine/.intermine/${MINE_NAME:-biotestmine}.properties
 
 
-    # echo "project.rss=http://localhost:$WORDPRESS_PORT/?feed=rss2" >> /home/intermine/.intermine/biotestmine.properties
-    # echo "links.blog=https://localhost:$WORDPRESS_PORT" >> /home/intermine/.intermine/biotestmine.properties
+    # echo "project.rss=http://localhost:$WORDPRESS_PORT/?feed=rss2" >> /home/intermine/.intermine/${MINE_NAME:-biotestmine}.properties
+    # echo "links.blog=https://localhost:$WORDPRESS_PORT" >> /home/intermine/.intermine/${MINE_NAME:-biotestmine}.properties
 fi
 
-if [ ! -f /home/intermine/biotestmine/project.xml ]; then
-    echo "$(date +%Y/%m/%d-%H:%M) Copy project.xml to ~/biotestmine/project.xml" >> /home/intermine/intermine/build.progress
-    cp /home/intermine/intermine/biotestmine/data/project.xml /home/intermine/intermine/biotestmine/
+# Copy mine configs
+if [ ! -f /home/intermine/${MINE_NAME:-biotestmine}/project.xml ]; then
+    if [ -f /home/intermine/intermine/configs/project.xml]; then
+        cp /home/intermine/intermine/project.xml /home/intermine/intermine/${MINE_NAME:-biotestmine}/
+        sed -i 's/DATA_DIR/\/home\/intermine\/intermine\/data/g' /home/intermine/intermine/${MINE_NAME:-biotestmine}/project.xml
+    else
+        echo "$(date +%Y/%m/%d-%H:%M) Copy project.xml to ~/biotestmine/project.xml" >> /home/intermine/intermine/build.progress
+        cp /home/intermine/intermine/biotestmine/data/project.xml /home/intermine/intermine/biotestmine/
 
-    echo "$(date +%Y/%m/%d-%H:%M) Set correct source path in project.xml" >> /home/intermine/intermine/build.progress
-    sed -i 's/DATA_DIR/\/home\/intermine\/intermine\/data/g' /home/intermine/intermine/biotestmine/project.xml
+        echo "$(date +%Y/%m/%d-%H:%M) Set correct source path in project.xml" >> /home/intermine/intermine/build.progress
+        sed -i 's/DATA_DIR/\/home\/intermine\/intermine\/data/g' /home/intermine/intermine/biotestmine/project.xml
+
+    fi
 fi
 
-if [ ! -d /home/intermine/intermine/data/malaria ]; then
-    echo "$(date +%Y/%m/%d-%H:%M) Copy malria-data to ~/data" >> /home/intermine/intermine/build.progress
-    cp /home/intermine/intermine/biotestmine/data/malaria-data.tar.gz /home/intermine/intermine/data/
-    cd /home/intermine/intermine/data/
-    tar -xf malaria-data.tar.gz
-    rm malaria-data.tar.gz
-    cd /home/intermine/intermine
+# Copy data
+if [ -d /home/intermine/intermine/data]; then
+    if [ !  -n "$(find "$DIR_TO_CHECK" -maxdepth 0 -type d -empty 2>/dev/null)"]; then
+        for f in *.tar.gz
+        do tar -xf $f && rm $f
+        done
+        cd /home/intermine/intermine
+    else
+        if [ ! -d /home/intermine/intermine/data/malaria ]; then
+        echo "$(date +%Y/%m/%d-%H:%M) Copy malria-data to ~/data" >> /home/intermine/intermine/build.progress
+        cp /home/intermine/intermine/biotestmine/data/malaria-data.tar.gz /home/intermine/intermine/data/
+        cd /home/intermine/intermine/data/
+        tar -xf malaria-data.tar.gz
+        rm malaria-data.tar.gz
+        cd /home/intermine/intermine
 fi
+
+fi
+
 
 echo "$(date +%Y/%m/%d-%H:%M) Connect and create Postgres databases" >> /home/intermine/intermine/build.progress
 
