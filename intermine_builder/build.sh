@@ -52,13 +52,13 @@ fi
 if [ ! -f /home/intermine/${MINE_NAME:-biotestmine}/project.xml ]; then
     if [ -f /home/intermine/intermine/configs/project.xml]; then
         cp /home/intermine/intermine/project.xml /home/intermine/intermine/${MINE_NAME:-biotestmine}/
-        sed -i 's/DATA_DIR/\/home\/intermine\/intermine\/data/g' /home/intermine/intermine/${MINE_NAME:-biotestmine}/project.xml
+        sed -i 's/${IM_DATA_DIR:-DATA_DIR}/\/home\/intermine\/intermine\/data/g' /home/intermine/intermine/${MINE_NAME:-biotestmine}/project.xml
     else
         echo "$(date +%Y/%m/%d-%H:%M) Copy project.xml to ~/biotestmine/project.xml" >> /home/intermine/intermine/build.progress
         cp /home/intermine/intermine/biotestmine/data/project.xml /home/intermine/intermine/biotestmine/
 
         echo "$(date +%Y/%m/%d-%H:%M) Set correct source path in project.xml" >> /home/intermine/intermine/build.progress
-        sed -i 's/DATA_DIR/\/home\/intermine\/intermine\/data/g' /home/intermine/intermine/biotestmine/project.xml
+        sed -i 's/${IM_DATA_DIR:-DATA_DIR}/\/home\/intermine\/intermine\/data/g' /home/intermine/intermine/biotestmine/project.xml
 
     fi
 fi
