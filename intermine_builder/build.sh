@@ -11,8 +11,8 @@ echo "" > /home/intermine/intermine/build.progress
 # Check if mine exists
 if [ ! -d ${MINE_NAME:-biotestmine} ]; then
     echo "$(date +%Y/%m/%d-%H:%M) Clone biotestmine" >> /home/intermine/intermine/build.progress
-    if [ ! -z "$MINE_URL"]; then
-        git clone ${MINE_URL} $MINE_NAME
+    if [ ! -z "$MINE_REPO_URL"]; then
+        git clone ${MINE_REPO_URL} $MINE_NAME
         echo "$(date +%Y/%m/%d-%H:%M) Update keyword_search.properties to use http://solr" >> /home/intermine/intermine/build.progress
         sed -i "s/localhost/solr/g" ./$MINE_NAME/dbmodel/resources/keyword_search.properties
     else
