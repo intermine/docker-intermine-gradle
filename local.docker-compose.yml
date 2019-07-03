@@ -11,6 +11,7 @@ services:
       # - ./data/mine/[PUT_YOUR_MINE_NAME_HERE]:/home/intermine/intermine/[PUT_YOUR_MINE_NAME_HERE]
     environment:
       - MINE_NAME=${MINE_NAME}
+      - MEM_OPTS=${MEM_OPTS:-"-Xmx2g -Xms1g"}
     depends_on: 
       - postgres
       - solr
@@ -29,6 +30,8 @@ services:
     build:
       context: ./solr
       dockerfile: ./solr.Dockerfile
+    environment:
+      - MEM_OPTS=${MEM_OPTS:-"-Xmx2g -Xms1g"}
     volumes:
       - ./data/solr:/var/solr
 
@@ -37,6 +40,8 @@ services:
     build:
       context: ./tomcat
       dockerfile: ./tomcat.Dockerfile
+    environment:
+      - MEM_OPTS=${MEM_OPTS:-"-Xmx1g -Xms500m"}
     ports:
       - ${TOMCAT_HOST_PORT:-9999}:${TOMCAT_PORT:-8080}
 
