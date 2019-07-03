@@ -50,35 +50,36 @@ fi
 
 # Copy mine configs
 if [ ! -f /home/intermine/${MINE_NAME:-biotestmine}/project.xml ]; then
-    if [ -f /home/intermine/intermine/configs/project.xml]; then
+    if [ -f /home/intermine/intermine/configs/project.xml ]; then
         cp /home/intermine/intermine/project.xml /home/intermine/intermine/${MINE_NAME:-biotestmine}/
-        sed -i 's/${IM_DATA_DIR:-DATA_DIR}/\/home\/intermine\/intermine\/data/g' /home/intermine/intermine/${MINE_NAME:-biotestmine}/project.xml
+        sed -i 's/'${IM_DATA_DIR:-DATA_DIR}'/\/home\/intermine\/intermine\/data/g' /home/intermine/intermine/${MINE_NAME:-biotestmine}/project.xml
     else
         echo "$(date +%Y/%m/%d-%H:%M) Copy project.xml to ~/biotestmine/project.xml" >> /home/intermine/intermine/build.progress
         cp /home/intermine/intermine/biotestmine/data/project.xml /home/intermine/intermine/biotestmine/
 
         echo "$(date +%Y/%m/%d-%H:%M) Set correct source path in project.xml" >> /home/intermine/intermine/build.progress
-        sed -i 's/${IM_DATA_DIR:-DATA_DIR}/\/home\/intermine\/intermine\/data/g' /home/intermine/intermine/biotestmine/project.xml
+        sed -i 's/'${IM_DATA_DIR:-DATA_DIR}'/\/home\/intermine\/intermine\/data/g' /home/intermine/intermine/biotestmine/project.xml
 
     fi
 fi
 
 # Copy data
-if [ -d /home/intermine/intermine/data]; then
-    if [ !  -n "$(find "$DIR_TO_CHECK" -maxdepth 0 -type d -empty 2>/dev/null)"]; then
-        for f in *.tar.gz
-        do tar -xf $f && rm $f
+if [ -d /home/intermine/intermine/data ]; then
+    if [ !  -n "$(find /home/intermine/intermine/data -maxdepth 0 -type d -empty 2>/dev/null)" ]; then
+        for f in *.tar.gz; do
+            tar xzf "$f" && rm "$f"
         done
         cd /home/intermine/intermine
     else
         if [ ! -d /home/intermine/intermine/data/malaria ]; then
-        echo "$(date +%Y/%m/%d-%H:%M) Copy malria-data to ~/data" >> /home/intermine/intermine/build.progress
-        cp /home/intermine/intermine/biotestmine/data/malaria-data.tar.gz /home/intermine/intermine/data/
-        cd /home/intermine/intermine/data/
-        tar -xf malaria-data.tar.gz
-        rm malaria-data.tar.gz
-        cd /home/intermine/intermine
-fi
+            echo "$(date +%Y/%m/%d-%H:%M) Copy malria-data to ~/data" >> /home/intermine/intermine/build.progress
+            cp /home/intermine/intermine/biotestmine/data/malaria-data.tar.gz /home/intermine/intermine/data/
+            cd /home/intermine/intermine/data/
+            tar -xf malaria-data.tar.gz
+            rm malaria-data.tar.gz
+            cd /home/intermine/intermine
+        fi
+    fi
 
 fi
 
