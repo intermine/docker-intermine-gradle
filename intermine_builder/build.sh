@@ -14,11 +14,11 @@ if [ ! -d ${MINE_NAME:-biotestmine} ]; then
     if [ ! -z "$MINE_REPO_URL"]; then
         git clone ${MINE_REPO_URL} $MINE_NAME
         echo "$(date +%Y/%m/%d-%H:%M) Update keyword_search.properties to use http://solr" >> /home/intermine/intermine/build.progress
-        sed -i "s/localhost/solr/g" ./$MINE_NAME/dbmodel/resources/keyword_search.properties
+        sed -i 's/localhost/'${SOLR_HOST:-solr}'/g' ./$MINE_NAME/dbmodel/resources/keyword_search.properties
     else
         git clone https://github.com/intermine/biotestmine
         echo "$(date +%Y/%m/%d-%H:%M) Update keyword_search.properties to use http://solr" >> /home/intermine/intermine/build.progress
-        sed -i "s/localhost/solr/g" ./biotestmine/dbmodel/resources/keyword_search.properties
+        sed -i 's/localhost/'${SOLR_HOST:-solr}'/g' ./biotestmine/dbmodel/resources/keyword_search.properties
     fi
 else
     echo "$(date +%Y/%m/%d-%H:%M) Update biotestmine to newest version" >> /home/intermine/intermine/build.progress
@@ -40,8 +40,8 @@ if [ ! -f /home/intermine/.intermine/${MINE_NAME:-biotestmine}.properties ]; the
     sed -i "s/PSQL_PWD/${PSQL_PWD:-postgres}/g" /home/intermine/.intermine/${MINE_NAME:-biotestmine}.properties
     sed -i "s/TOMCAT_USER/${TOMCAT_USER:-tomcat}/g" /home/intermine/.intermine/${MINE_NAME:-biotestmine}.properties
     sed -i "s/TOMCAT_PWD/${TOMCAT_PWD:-tomcat}/g" /home/intermine/.intermine/${MINE_NAME:-biotestmine}.properties
-    sed -i "s/webapp.deploy.url=http:\/\/localhost:8080/webapp.deploy.url=http:\/\/tomcat:${TOMCAT_PORT:-8080}/g" /home/intermine/.intermine/${MINE_NAME:-biotestmine}.properties
-    sed -i "s/serverName=localhost/serverName=postgres:${PGPORT:-5432}/g" /home/intermine/.intermine/${MINE_NAME:-biotestmine}.properties
+    sed -i "s/webapp.deploy.url=http:\/\/localhost:8080/webapp.deploy.url=http:\/\/${TOMCAT_HOST:-tomcat}:${TOMCAT_PORT:-8080}/g" /home/intermine/.intermine/${MINE_NAME:-biotestmine}.properties
+    sed -i "s/serverName=localhost/serverName=${PGHOST:-postgres}:${PGPORT:-5432}/g" /home/intermine/.intermine/${MINE_NAME:-biotestmine}.properties
 
 
     # echo "project.rss=http://localhost:$WORDPRESS_PORT/?feed=rss2" >> /home/intermine/.intermine/${MINE_NAME:-biotestmine}.properties
