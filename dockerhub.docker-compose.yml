@@ -8,7 +8,7 @@ services:
       - ./data/mine/configs:/home/intermine/intermine/configs
       # - ./data/mine/[PUT_YOUR_MINE_NAME_HERE]:/home/intermine/intermine/[PUT_YOUR_MINE_NAME_HERE]      
     environment:
-      - MINE_NAME=${MINE_NAME}
+      - MINE_NAME=${MINE_NAME:-biotestmine}
       - MEM_OPTS=${MEM_OPTS:-"-Xmx2g -Xms1g"}
     depends_on: 
       - postgres
@@ -33,7 +33,7 @@ services:
     container_name: intermine_tomcat
     image: intermine/tomcat
     environment:
-      - MEM_OPTS=${MEM_OPTS:-"-Xmx1g -Xms500m"}
+      - MEM_OPTS=${MEM_OPTS:--Xmx1g -Xms500m}
     ports:
       - ${TOMCAT_HOST_PORT:-9999}:${TOMCAT_PORT:-8080}
 

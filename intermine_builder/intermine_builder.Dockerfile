@@ -2,7 +2,7 @@ FROM alpine:3.9
 LABEL maintainer="Ank"
 
 ENV JAVA_HOME="/usr/lib/jvm/default-jvm"
-ENV MEM_OPTS = "-Xmx1g -Xms500m"
+ENV MEM_OPTS="-Xmx1g -Xms500m"
 ENV GRADLE_OPTS="-server ${MEM_OPTS} -XX:+UseParallelGC -XX:SoftRefLRUPolicyMSPerMB=1 -XX:MaxHeapFreeRatio=99 -Dorg.gradle.daemon=false"
 
 RUN apk add --no-cache openjdk8-jre && \
