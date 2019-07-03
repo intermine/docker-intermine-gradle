@@ -76,6 +76,7 @@ else
     echo "$(date +%Y/%m/%d-%H:%M) No user data directory found"
     if [ ! -d /home/intermine/intermine/data/malaria ]; then
         echo "$(date +%Y/%m/%d-%H:%M) Copy malria-data to ~/data" #>> /home/intermine/intermine/build.progress
+        mkdir -p /home/intermine/intermine/data/
         cp /home/intermine/intermine/biotestmine/data/malaria-data.tar.gz /home/intermine/intermine/data/
         cd /home/intermine/intermine/data/
         tar -xf malaria-data.tar.gz
