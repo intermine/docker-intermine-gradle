@@ -90,6 +90,11 @@ echo "$(date +%Y/%m/%d-%H:%M) Connect and create Postgres databases" #>> /home/i
 
 # # Wait for database
 # dockerize -wait tcp://postgres:$PGPORT -timeout 60s
+until psql -U postgres -h ${PGHOST:-postgres} -c '\l'; do
+  echo >&2 "$(date +%Y%m%dt%H%M%S) Postgres is unavailable - sleeping"
+  sleep 1
+done
+echo >&2 "$(date +%Y%m%dt%H%M%S) Postgres is up - executing command"
 
 # Close all open connections to database
 psql -U postgres -h ${PGHOST:-postgres} -c "SELECT pg_terminate_backend(pid) FROM pg_stat_activity WHERE pid <> pg_backend_pid();"
