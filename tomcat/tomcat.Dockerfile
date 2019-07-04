@@ -28,6 +28,7 @@ RUN apk del curl && \
 COPY ./configs/* /opt/tomcat/conf/
 COPY ./configs/web_context.xml /opt/tomcat/webapps/manager/META-INF/context.xml
 
+ENV JAVA_OPTS="-Xmx500m -Xms256m"
 WORKDIR /opt/tomcat
 EXPOSE 8080
 ENTRYPOINT ["./bin/catalina.sh", "run"]
