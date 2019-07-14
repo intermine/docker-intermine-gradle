@@ -8,29 +8,40 @@ cd /home/intermine/intermine
 echo "" > /home/intermine/intermine/build.progress
 
 echo "Starting build"
+echo $MINE_REPO_URL
 # Check if mine exists
 if [ ! -d ${MINE_NAME:-biotestmine} ]; then
-    echo "$(date +%Y/%m/%d-%H:%M) Clone biotestmine" #>> /home/intermine/intermine/build.progress
-    if [ ! -z "$MINE_REPO_URL"]; then
+    # echo "$(date +%Y/%m/%d-%H:%M) Clone ${MINE_NAME:-biotestmine}" #>> /home/intermine/intermine/build.progress
+    if [ ! -z "$MINE_REPO_URL" ]; then
+        echo "$(date +%Y/%m/%d-%H:%M) Clone ${MINE_NAME}"
         git clone ${MINE_REPO_URL} $MINE_NAME
         echo "$(date +%Y/%m/%d-%H:%M) Update keyword_search.properties to use http://solr" #>> /home/intermine/intermine/build.progress
         sed -i 's/localhost/'${SOLR_HOST:-solr}'/g' ./$MINE_NAME/dbmodel/resources/keyword_search.properties
     else
+        echo "$(date +%Y/%m/%d-%H:%M) Clone biotestmine"
         git clone https://github.com/intermine/biotestmine
         echo "$(date +%Y/%m/%d-%H:%M) Update keyword_search.properties to use http://solr" #>> /home/intermine/intermine/build.progress
         sed -i 's/localhost/'${SOLR_HOST:-solr}'/g' ./biotestmine/dbmodel/resources/keyword_search.properties
     fi
 else
-    echo "$(date +%Y/%m/%d-%H:%M) Update biotestmine to newest version" #>> /home/intermine/intermine/build.progress
+    echo "$(date +%Y/%m/%d-%H:%M) Update ${MINE_NAME:-biotestmine} to newest version" #>> /home/intermine/intermine/build.progress
     cd ${MINE_NAME:-biotestmine}
     # git pull
     cd /home/intermine/intermine
 fi
 
+echo "$(date +%Y/%m/%d-%H:%M) Cloning intermine scripts repo to /home/intermine/intermine/intermine-scripts"
+git clone https://github.com/intermine/intermine-scripts 
+
 # Copy mine properties
 if [ ! -f /home/intermine/.intermine/${MINE_NAME:-biotestmine}.properties ]; then
-    echo "$(date +%Y/%m/%d-%H:%M) Copy ${MINE_NAME:-biotestmine}.properties to ~/.intermine/${MINE_NAME:-biotestmine}.properties" #>> /home/intermine/intermine/build.progress
-    cp /home/intermine/intermine/${MINE_NAME:-biotestmine}/data/${MINE_NAME:-biotestmine}.properties /home/intermine/.intermine/
+    if [ ! -f /home/intermine/intermine/configs/${MINE_NAME:-biotestmine}.properties]; then
+        echo "$(date +%Y/%m/%d-%H:%M) Copy biotestmine.properties to ~/.intermine/${MINE_NAME:-biotestmine}.properties" #>> /home/intermine/intermine/build.progress
+        cp /home/intermine/intermine/${MINE_NAME:-biotestmine}/data/${MINE_NAME:-biotestmine}.properties /home/intermine/.intermine/
+    else
+        echo "$(date +%Y/%m/%d-%H:%M) Copy ${MINE_NAME:-biotestmine}.properties to ~/.intermine/${MINE_NAME:-biotestmine}.properties"
+        cp /home/intermine/intermine/configs/${MINE_NAME:-biotestmine}.properties /home/intermine/.intermine/
+    fi
 
     echo -e "$(date +%Y/%m/%d-%H:%M) Set properties in .intermine/${MINE_NAME:-biotestmine}.properties to\nPSQL_DB_NAME\tbiotestmine\nPSQL_USER\t$PSQL_USER\nPSQL_PWD\t$PSQL_PWD\nTOMCAT_USER\t$TOMCAT_USER\nTOMCAT_PWD\t$TOMCAT_PWD\nGRADLE_OPTS\t$GRADLE_OPTS" #>> /home/intermine/intermine/build.progress
 
@@ -49,9 +60,11 @@ if [ ! -f /home/intermine/.intermine/${MINE_NAME:-biotestmine}.properties ]; the
 fi
 
 # Copy mine configs
-if [ ! -f /home/intermine/${MINE_NAME:-biotestmine}/project.xml ]; then
+if [ ! -f /home/intermine/intermine/${MINE_NAME:-biotestmine}/project.xml ]; then
     if [ -f /home/intermine/intermine/configs/project.xml ]; then
-        cp /home/intermine/intermine/project.xml /home/intermine/intermine/${MINE_NAME:-biotestmine}/
+        echo "$(date +%Y/%m/%d-%H:%M) Copy project.xml to ~/${MINE_NAME:-biotestmine}/project.xml"
+        cp /home/intermine/intermine/configs/project.xml /home/intermine/intermine/${MINE_NAME:-biotestmine}/
+        echo "$(date +%Y/%m/%d-%H:%M) Set correct source path in project.xml"
         sed -i 's/'${IM_DATA_DIR:-DATA_DIR}'/\/home\/intermine\/intermine\/data/g' /home/intermine/intermine/${MINE_NAME:-biotestmine}/project.xml
     else
         echo "$(date +%Y/%m/%d-%H:%M) Copy project.xml to ~/biotestmine/project.xml" #>> /home/intermine/intermine/build.progress
@@ -61,6 +74,9 @@ if [ ! -f /home/intermine/${MINE_NAME:-biotestmine}/project.xml ]; then
         sed -i 's/'${IM_DATA_DIR:-DATA_DIR}'/\/home\/intermine\/intermine\/data/g' /home/intermine/intermine/biotestmine/project.xml
 
     fi
+else
+    echo "$(date +%Y/%m/%d-%H:%M) Set correct source path in project.xml"
+    sed -i "s~${IM_DATA_DIR:-DATA_DIR}~/home/intermine/intermine/data~g" /home/intermine/intermine/${MINE_NAME:-biotestmine}/project.xml
 fi
 
 # Copy data
@@ -103,9 +119,9 @@ echo "$(date +%Y/%m/%d-%H:%M) Database is now available ..." #>> /home/intermine
 echo "$(date +%Y/%m/%d-%H:%M) Reset databases and roles" #>> /home/intermine/intermine/build.progress
 
 # Delete Databases if exist
-psql -U postgres -h ${PGHOST:-postgres} -c "DROP DATABASE IF EXISTS \"biotestmine\";"
-psql -U postgres -h ${PGHOST:-postgres} -c "DROP DATABASE IF EXISTS \"items-biotestmine\";"
-psql -U postgres -h ${PGHOST:-postgres} -c "DROP DATABASE IF EXISTS \"userprofile-biotestmine\";"
+psql -U postgres -h ${PGHOST:-postgres} -c "DROP DATABASE IF EXISTS \"${MINE_NAME:-biotestmine}\";"
+psql -U postgres -h ${PGHOST:-postgres} -c "DROP DATABASE IF EXISTS \"items-${MINE_NAME:-biotestmine}\";"
+psql -U postgres -h ${PGHOST:-postgres} -c "DROP DATABASE IF EXISTS \"userprofile-${MINE_NAME:-biotestmine}\";"
 
 # psql -U postgres -h ${PGHOST:-postgres} -c "DROP ROLE IF EXISTS ${PSQL_USER:-postgres};"
 
@@ -113,27 +129,34 @@ psql -U postgres -h ${PGHOST:-postgres} -c "DROP DATABASE IF EXISTS \"userprofil
 echo "$(date +%Y/%m/%d-%H:%M) Creating postgres database tables and roles.." #>> /home/intermine/intermine/build.progress
 # psql -U postgres -h ${PGHOST:-postgres} -c "CREATE USER ${PSQL_USER:-postgres} WITH PASSWORD '${PSQL_PWD:-postgres}';"
 psql -U postgres -h ${PGHOST:-postgres} -c "ALTER USER ${PSQL_USER:-postgres} WITH SUPERUSER;"
-psql -U postgres -h ${PGHOST:-postgres} -c "CREATE DATABASE \"biotestmine\";"
-psql -U postgres -h ${PGHOST:-postgres} -c "CREATE DATABASE \"items-biotestmine\";"
-psql -U postgres -h ${PGHOST:-postgres} -c "CREATE DATABASE \"userprofile-biotestmine\";"
-psql -U postgres -h ${PGHOST:-postgres} -c "GRANT ALL PRIVILEGES ON DATABASE biotestmine to ${PSQL_USER:-postgres};"
-psql -U postgres -h ${PGHOST:-postgres} -c "GRANT ALL PRIVILEGES ON DATABASE \"items-biotestmine\" to ${PSQL_USER:-postgres};"
-psql -U postgres -h ${PGHOST:-postgres} -c "GRANT ALL PRIVILEGES ON DATABASE \"userprofile-biotestmine\" to ${PSQL_USER:-postgres};"
+psql -U postgres -h ${PGHOST:-postgres} -c "CREATE DATABASE \"${MINE_NAME:-biotestmine}\";"
+psql -U postgres -h ${PGHOST:-postgres} -c "CREATE DATABASE \"items-${MINE_NAME:-biotestmine}\";"
+psql -U postgres -h ${PGHOST:-postgres} -c "CREATE DATABASE \"userprofile-${MINE_NAME:-biotestmine}\";"
+psql -U postgres -h ${PGHOST:-postgres} -c "GRANT ALL PRIVILEGES ON DATABASE ${MINE_NAME:-biotestmine} to ${PSQL_USER:-postgres};"
+psql -U postgres -h ${PGHOST:-postgres} -c "GRANT ALL PRIVILEGES ON DATABASE \"items-${MINE_NAME:-biotestmine}\" to ${PSQL_USER:-postgres};"
+psql -U postgres -h ${PGHOST:-postgres} -c "GRANT ALL PRIVILEGES ON DATABASE \"userprofile-${MINE_NAME:-biotestmine}\" to ${PSQL_USER:-postgres};"
 
 
-cd biotestmine
+cd ${MINE_NAME:-biotestmine}
 
-echo "$(date +%Y/%m/%d-%H:%M) Gradle: buildDB" #>> /home/intermine/intermine/build.progress
-./gradlew buildDB --stacktrace #>> /home/intermine/intermine/build.progress
+if [ ! -f project_build ]; then
+    cp /home/intermine/intermine/intermine-scripts/project_build .
+fi
 
-echo "$(date +%Y/%m/%d-%H:%M) Gradle: integrate uniprot-malaria" #>> /home/intermine/intermine/build.progress
-./gradlew integrate -Psource=uniprot-malaria --stacktrace
+echo "$(date +%Y/%m/%d-%H:%M) Running project_build script"
+./project_build -b ${PGHOST:-postgres} /tmp/dump
 
-echo "$(date +%Y/%m/%d-%H:%M) Gradle: integrate malaria-gff" #>> /home/intermine/intermine/build.progress
-./gradlew integrate -Psource=malaria-gff --stacktrace
+# echo "$(date +%Y/%m/%d-%H:%M) Gradle: buildDB" #>> /home/intermine/intermine/build.progress
+# ./gradlew buildDB --stacktrace #>> /home/intermine/intermine/build.progress
 
-echo "$(date +%Y/%m/%d-%H:%M) Gradle: integrate malaria-chromosome-fasta" #>> /home/intermine/intermine/build.progress
-./gradlew integrate -Psource=malaria-chromosome-fasta --stacktrace
+# echo "$(date +%Y/%m/%d-%H:%M) Gradle: integrate uniprot-malaria" #>> /home/intermine/intermine/build.progress
+# ./gradlew integrate -Psource=uniprot-malaria --stacktrace
+
+# echo "$(date +%Y/%m/%d-%H:%M) Gradle: integrate malaria-gff" #>> /home/intermine/intermine/build.progress
+# ./gradlew integrate -Psource=malaria-gff --stacktrace
+
+# echo "$(date +%Y/%m/%d-%H:%M) Gradle: integrate malaria-chromosome-fasta" #>> /home/intermine/intermine/build.progress
+# ./gradlew integrate -Psource=malaria-chromosome-fasta --stacktrace
 
 echo "$(date +%Y/%m/%d-%H:%M) Gradle: integrate entrez-organism" #>> /home/intermine/intermine/build.progress
 ./gradlew integrate -Psource=entrez-organism --stacktrace
