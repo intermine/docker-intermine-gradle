@@ -6,12 +6,12 @@ Docker for InterMine
  - Docker compose
 
 ## Quickstart
-### Build images locally and start mine
+### Option 1: Build images locally and start mine
 ```bash
-docker-compose -f local.docker-compose.yml up --build
+docker-compose -f local.docker-compose.yml up --build --force-recreate
 ```
 
-### Pull images from Docker Hub and start mine
+### Option 2: Pull images from Docker Hub and start mine
 ```bash
 docker-compose -f dockerhub.docker-compose.yml up 
 ```
