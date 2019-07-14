@@ -72,17 +72,20 @@ if [ ! -f /home/intermine/intermine/${MINE_NAME:-biotestmine}/project.xml ]; the
         cp /home/intermine/intermine/configs/project.xml /home/intermine/intermine/${MINE_NAME:-biotestmine}/
         echo "$(date +%Y/%m/%d-%H:%M) Set correct source path in project.xml"
         sed -i 's/'${IM_DATA_DIR:-DATA_DIR}'/\/home\/intermine\/intermine\/data/g' /home/intermine/intermine/${MINE_NAME:-biotestmine}/project.xml
+        sed -i 's/dump="true"/dump="flase"/g' /home/intermine/intermine/${MINE_NAME:-biotestmine}/project.xml     
     else
         echo "$(date +%Y/%m/%d-%H:%M) Copy project.xml to ~/biotestmine/project.xml" #>> /home/intermine/intermine/build.progress
         cp /home/intermine/intermine/biotestmine/data/project.xml /home/intermine/intermine/biotestmine/
 
         echo "$(date +%Y/%m/%d-%H:%M) Set correct source path in project.xml" #>> /home/intermine/intermine/build.progress
         sed -i 's/'${IM_DATA_DIR:-DATA_DIR}'/\/home\/intermine\/intermine\/data/g' /home/intermine/intermine/biotestmine/project.xml
+        sed -i 's/dump="true"/dump="flase"/g' /home/intermine/intermine/biotestmine/project.xml
 
     fi
 else
     echo "$(date +%Y/%m/%d-%H:%M) Set correct source path in project.xml"
     sed -i "s~${IM_DATA_DIR:-DATA_DIR}~/home/intermine/intermine/data~g" /home/intermine/intermine/${MINE_NAME:-biotestmine}/project.xml
+    sed -i 's/dump="true"/dump="flase"/g' /home/intermine/intermine/${MINE_NAME:-biotestmine}/project.xml
 fi
 
 # Copy data
@@ -146,7 +149,7 @@ psql -U postgres -h ${PGHOST:-postgres} -c "GRANT ALL PRIVILEGES ON DATABASE \"u
 cd ${MINE_NAME:-biotestmine}
 
 echo "$(date +%Y/%m/%d-%H:%M) Running project_build script"
-./project_build -b ${PGHOST:-postgres} /tmp/dump
+./project_build -b -T localhost /home/intermine/intermine/dump/dump
 
 # echo "$(date +%Y/%m/%d-%H:%M) Gradle: buildDB" #>> /home/intermine/intermine/build.progress
 # ./gradlew buildDB --stacktrace #>> /home/intermine/intermine/build.progress
@@ -160,14 +163,14 @@ echo "$(date +%Y/%m/%d-%H:%M) Running project_build script"
 # echo "$(date +%Y/%m/%d-%H:%M) Gradle: integrate malaria-chromosome-fasta" #>> /home/intermine/intermine/build.progress
 # ./gradlew integrate -Psource=malaria-chromosome-fasta --stacktrace
 
-echo "$(date +%Y/%m/%d-%H:%M) Gradle: integrate entrez-organism" #>> /home/intermine/intermine/build.progress
-./gradlew integrate -Psource=entrez-organism --stacktrace
+# echo "$(date +%Y/%m/%d-%H:%M) Gradle: integrate entrez-organism" #>> /home/intermine/intermine/build.progress
+# ./gradlew integrate -Psource=entrez-organism --stacktrace
 
-echo "$(date +%Y/%m/%d-%H:%M) Gradle: integrate update-publications" #>> /home/intermine/intermine/build.progress
-./gradlew integrate -Psource=update-publications --stacktrace #>> /home/intermine/intermine/build.progress
+# echo "$(date +%Y/%m/%d-%H:%M) Gradle: integrate update-publications" #>> /home/intermine/intermine/build.progress
+# ./gradlew integrate -Psource=update-publications --stacktrace #>> /home/intermine/intermine/build.progress
 
-echo "$(date +%Y/%m/%d-%H:%M) Gradle: run post_processess" #>> /home/intermine/intermine/build.progress
-./gradlew postProcess --stacktrace #>> /home/intermine/intermine/build.progress
+# echo "$(date +%Y/%m/%d-%H:%M) Gradle: run post_processess" #>> /home/intermine/intermine/build.progress
+# ./gradlew postProcess --stacktrace #>> /home/intermine/intermine/build.progress
 
 echo "$(date +%Y/%m/%d-%H:%M) Gradle: build userDB" #>> /home/intermine/intermine/build.progress
 ./gradlew buildUserDB --stacktrace #>> /home/intermine/intermine/build.progress
