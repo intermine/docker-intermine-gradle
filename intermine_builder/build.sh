@@ -30,12 +30,18 @@ else
     cd /home/intermine/intermine
 fi
 
-echo "$(date +%Y/%m/%d-%H:%M) Cloning intermine scripts repo to /home/intermine/intermine/intermine-scripts"
-git clone https://github.com/intermine/intermine-scripts 
+# Copy project_build from intermine_scripts repo
+if [ ! -f /home/intermine/intermine/${MINE_NAME:-biotestmine}/project_build ]; then
+    echo "$(date +%Y/%m/%d-%H:%M) Cloning intermine scripts repo to /home/intermine/intermine/intermine-scripts"
+    git clone https://github.com/intermine/intermine-scripts
+    echo "$(date +%Y/%m/%d-%H:%M) Copy project_build to /home/intermine/intermine/${MINE_NAME:-biotestmine}"
+    cp /home/intermine/intermine/intermine-scripts/project_build /home/intermine/intermine/${MINE_NAME:-biotestmine}/project_build
+    chmod +x /home/intermine/intermine/${MINE_NAME:-biotestmine}/project_build
+fi
 
 # Copy mine properties
 if [ ! -f /home/intermine/.intermine/${MINE_NAME:-biotestmine}.properties ]; then
-    if [ ! -f /home/intermine/intermine/configs/${MINE_NAME:-biotestmine}.properties]; then
+    if [ ! -f /home/intermine/intermine/configs/${MINE_NAME:-biotestmine}.properties ]; then
         echo "$(date +%Y/%m/%d-%H:%M) Copy biotestmine.properties to ~/.intermine/${MINE_NAME:-biotestmine}.properties" #>> /home/intermine/intermine/build.progress
         cp /home/intermine/intermine/${MINE_NAME:-biotestmine}/data/${MINE_NAME:-biotestmine}.properties /home/intermine/.intermine/
     else
@@ -138,10 +144,6 @@ psql -U postgres -h ${PGHOST:-postgres} -c "GRANT ALL PRIVILEGES ON DATABASE \"u
 
 
 cd ${MINE_NAME:-biotestmine}
-
-if [ ! -f project_build ]; then
-    cp /home/intermine/intermine/intermine-scripts/project_build .
-fi
 
 echo "$(date +%Y/%m/%d-%H:%M) Running project_build script"
 ./project_build -b ${PGHOST:-postgres} /tmp/dump
