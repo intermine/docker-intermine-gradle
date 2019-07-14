@@ -11,6 +11,8 @@ services:
       # - ./data/mine/[PUT_YOUR_MINE_NAME_HERE]:/home/intermine/intermine/[PUT_YOUR_MINE_NAME_HERE]
     environment:
       - MINE_NAME=${MINE_NAME:-biotestmine}
+      - MINE_REPO_URL=${MINE_REPO_URL:-}
+      - IM_DATA_DIR=${IM_DATA_DIR:-DATA_DIR}
       - MEM_OPTS=${MEM_OPTS:-"-Xmx2g -Xms1g"}
     depends_on: 
       - postgres
