@@ -34,6 +34,7 @@ services:
       dockerfile: ./solr.Dockerfile
     environment:
       - MEM_OPTS=${MEM_OPTS:-"-Xmx2g -Xms1g"}
+      - MINE_NAME=${MINE_NAME:-biotestmine}
     volumes:
       - ./data/solr:/var/solr
 

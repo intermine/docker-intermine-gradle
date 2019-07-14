@@ -28,6 +28,7 @@ services:
     image: intermine/solr
     environment:
       - MEM_OPTS=${MEM_OPTS:-"-Xmx2g -Xms1g"}
+      - MINE_NAME=${MINE_NAME:-biotestmine}
     volumes:
       - ./data/solr:/opt/solr/server/solr/mycores
 
