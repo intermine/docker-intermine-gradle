@@ -1,6 +1,6 @@
 #!/bin/bash
 set -e
-psql -v ON_ERROR_STOP=1 --username postgres <<-EOSQL
+psql -v ON_ERROR_STOP=1 --username ${PGUSER:-postgres} <<-EOSQL
     update pg_database set datallowconn = TRUE where datname = 'template0';
     \c template0
     update pg_database set datistemplate = FALSE where datname = 'template1';
