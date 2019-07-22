@@ -24,37 +24,66 @@ to visit your mine (yes it is that easy now!!)
 ### Using a custom mine
 You can use your custom mine for the builds. 
 
-- First set the git url of your mine to the env var `MINE_REPO_URL`. (directory structure similar to biotestmine is assumed)
+#### Step 1
+
+- Set the git url of your mine to the env var `MINE_REPO_URL`. (directory structure similar to biotestmine is assumed)
 
 
-   If you do not have your mine hosted on github/gitlab then you can also mount your   mine files directly to the build container. Just add your mine folder inside /data/mine  folder created by docker compose and uncomment the following line in the    docker-compose.yml file. 
+   If you do not have your mine hosted on github/gitlab then you can also mount your   mine files directly to the build container. Add your mine folder inside `/data/mine`  folder created by docker compose and uncomment the following line in the    docker-compose.yml file. 
    ```
    # - ./data/mine/[PUT_YOUR_MINE_NAME_HERE]:/home/intermine/intermine/ [PUT_YOUR_MINE_NAME_HERE]
 
    ```
    > Note: build will do a few changes to your mine files when mine files are directly mounted to the build container. So, it is recommended to use a copy of your mine for the build. This is not the case when you are using MINE_REPO_URL to pull mine files.
-- Then set `MINE_NAME` env var to your mine name.
+
+#### Step 2
+- Set `MINE_NAME` env var to your mine name.
 
    > Make sure that the folder name matches with your mine name.
 
-- Finally set `IM_DATA_DIR` env var to the data dir prefix that you have in your project.xml file. This will be used for search and replace to fix data locations inside the build container.
+#### Step 3
+- Set `IM_DATA_DIR` env var to the data dir prefix that you have in your project.xml file. This will be used for search and replace to fix data locations inside the build container.
 
+  > Note: DO NOT add the trailing "/"
+
+#### Step 4
+- Follow [Adding data and project configs](#adding-data-and-project-configs) section to load data and config to your mine.
 
 
 ### Adding data and project configs
 
 After quickstart you have a data folder created at your current working directory. 
 
-You can also create the folder structure on your own if you do not want to do a quickstart. Just create a folder structure like `data/mine/data`  
+You can also create the folder structure on your own if you do not want to do a quickstart. Create a folder structure like `data/mine/data`  
 
-Add your data files to **`data/mine/data`** folder. If you do not want to copy your data files over then just change location of data files from **`data/mine/data`** folder to your desired folder location in docker-compose.yml file.
+Add your data files to **`data/mine/data`** folder. If you do not want to copy your data files over then change location of data files from **`data/mine/data`** folder to your desired folder location in docker-compose.yml file.
 
-> Remeber to create a folder for every data source you use.
+> Remeber to create a folder for every data source you use. Also make sure that you have appropriate permissions for mounting your data dir to a docker container.
 
-Add your config files to **`data/mine/config`** folder. Configs include your project.xml file.
+Add your config files to **`data/mine/config`** folder. Configs include your properties file.
+
+> In your properties file, do the following changes:
+
+      db.production.datasource.serverName=postgres
+      db.production.datasource.databaseName=PSQL_DB_NAME
+      db.production.datasource.user=PSQL_USER
+      db.production.datasource.password=PSQL_PWD
+  
+      db.common-tgt-items.datasource.serverName=postgres
+      db.common-tgt-items.datasource.databaseName=items-PSQL_DB_NAME
+      db.common-tgt-items.datasource.user=PSQL_USER
+      db.common-tgt-items.datasource.password=PSQL_PWD
+      
+      db.userprofile-production.datasource.serverName=postgres
+      db.userprofile-production.datasource.databaseName=userprofile-PSQL_DB_NAME
+      db.userprofile-production.datasource.user=PSQL_USER
+      db.userprofile-production.datasource.password=PSQL_PWD
+
+      webapp.manager=TOMCAT_USER
+      webapp.password=TOMCAT_PWD
 
 ### Changing default settings
-You can configure a lot of options by just creating a .env file in the current working directory and adding the required key value pairs. These are used as env vars by docker-compose.
+You can configure a lot of options by creating a .env file in the current working directory and adding the required key value pairs. These are used as env vars by docker-compose.
 
 Available options are:
  - MINE_NAME
@@ -69,6 +98,8 @@ Available options are:
 
    Set it to the data dir prefix that you have in your project.xml file. This will be used for search and replace to fix data locations inside the build container.
 
+    > Note: DO NOT add the trailing "/"
+    
  - TOMCAT_HOST_PORT
    
    Set the port of your host machine to which tomcat docker container binds to. This is the port that you will use to access the mine webapp.
