@@ -6,7 +6,7 @@ services:
       context: ./intermine_builder
       dockerfile: ./intermine_builder.Dockerfile
     volumes:
-      - ./data/mine/data:/home/intermine/intermine/data
+      # - ./data/mine/data:/home/intermine/intermine/data
       - ./data/mine/dump:/home/intermine/intermine/dump
       - ./data/mine/configs:/home/intermine/intermine/configs
       # - ./data/mine/[PUT_YOUR_MINE_NAME_HERE]:/home/intermine/intermine/[PUT_YOUR_MINE_NAME_HERE]
