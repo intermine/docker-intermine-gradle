@@ -29,8 +29,8 @@ You can use your custom mine for the builds.
 - Set the git url of your mine to the env var `MINE_REPO_URL`. (directory structure similar to biotestmine is assumed)
 
 
-   If you do not have your mine hosted on github/gitlab then you can also mount your   mine files directly to the build container. Add your mine folder inside `/data/mine`  folder created by docker compose and uncomment the following line in the    docker-compose.yml file. 
-   ```
+   If you do not have your mine hosted on github/gitlab then you can also mount your   mine files directly to the build container. Add your mine folder inside `./data/mine`  folder created by docker compose and uncomment the following line in the    docker-compose.yml file. 
+   ```bash
    # - ./data/mine/[PUT_YOUR_MINE_NAME_HERE]:/home/intermine/intermine/ [PUT_YOUR_MINE_NAME_HERE]
 
    ```
@@ -52,15 +52,24 @@ You can use your custom mine for the builds.
 
 ### Adding data and project configs
 
-After quickstart you have a data folder created at your current working directory. 
+#### Data
 
-You can also create the folder structure on your own if you do not want to do a quickstart. Create a folder structure like `data/mine/data`  
+After quickstart you have a data folder created at your **current working directory**. 
 
-Add your data files to **`data/mine/data`** folder. If you do not want to copy your data files over then change location of data files from **`data/mine/data`** folder to your desired folder location in docker-compose.yml file.
+You can also create the folder structure on your own if you do not want to do a quickstart. Create a folder structure like `./data/mine/data`  
+
+Add your data files to **`./data/mine/data`** folder and then uncomment the following line in intermine_builder section of your docker-compose file:
+```bash
+# - ./data/mine/data:/home/intermine/intermine/data
+```
+
+ If you do not want to copy your data files over then change location of data files in your docker-compose file from **`./data/mine/data`** folder to your desired folder location in docker-compose.yml file.
 
 > Remeber to create a folder for every data source you use. Also make sure that you have appropriate permissions for mounting your data dir to a docker container.
 
-Add your config files to **`data/mine/config`** folder. Configs include your properties file.
+#### Configs
+
+Add your config files to **`./data/mine/config`** folder. Configs include your properties file.
 
 > In your properties file, do the following changes:
 
@@ -83,7 +92,12 @@ Add your config files to **`data/mine/config`** folder. Configs include your pro
       webapp.password=TOMCAT_PWD
 
 ### Changing default settings
-You can configure a lot of options by creating a .env file in the current working directory and adding the required key value pairs. These are used as env vars by docker-compose.
+You can configure a lot of options by creating a `.env` file in the current working directory and adding the required key value pairs. These are used as env vars by docker-compose. For example:
+```bash
+MINE_NAME=humanmine
+MINE_REPO_URL=https://github.com/julie-sullivan/humanmine
+IM_DATA_DIR=/tmp/data
+```
 
 Available options are:
  - MINE_NAME
@@ -99,7 +113,7 @@ Available options are:
    Set it to the data dir prefix that you have in your project.xml file. This will be used for search and replace to fix data locations inside the build container.
 
     > Note: DO NOT add the trailing "/"
-    
+
  - TOMCAT_HOST_PORT
    
    Set the port of your host machine to which tomcat docker container binds to. This is the port that you will use to access the mine webapp.
