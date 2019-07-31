@@ -9,6 +9,7 @@ echo "" > /home/intermine/intermine/build.progress
 
 echo "Starting build"
 echo $MINE_REPO_URL
+
 # Check if mine exists
 if [ ! -d ${MINE_NAME:-biotestmine} ]; then
     # echo "$(date +%Y/%m/%d-%H:%M) Clone ${MINE_NAME:-biotestmine}" #>> /home/intermine/intermine/build.progress
@@ -28,6 +29,17 @@ else
     cd ${MINE_NAME:-biotestmine}
     # git pull
     cd /home/intermine/intermine
+fi
+
+# clone bio sources repo if url is given
+if [ ! -z "$BIOSOURCES_REPO_URL" ]; then
+    echo "$(date +%Y/%m/%d-%H:%M) Clone ${BIOSOURCES_REPO_URL}"
+    git clone ${BIOSOURCES_REPO_URL} $MINE_NAME-bio-sources
+    # build and install bio sources
+    cd /home/intermine/intermine/$MINE_NAME-bio-sources
+    echo "$(date +%Y/%m/%d-%H:%M) Building and Installing bio sources"
+    ./gradlew clean -Dorg.gradle.project.release=dev --stacktrace
+    ./gradlew install --stacktrace
 fi
 
 # Copy project_build from intermine_scripts repo

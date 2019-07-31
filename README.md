@@ -28,7 +28,6 @@ You can use your custom mine for the builds.
 
 - Set the git url of your mine to the env var `MINE_REPO_URL`. (directory structure similar to biotestmine is assumed)
 
-
    If you do not have your mine hosted on github/gitlab then you can also mount your   mine files directly to the build container. Add your mine folder inside `./data/mine`  folder created by docker compose and uncomment the following line in the    docker-compose.yml file. 
    ```bash
    # - ./data/mine/[PUT_YOUR_MINE_NAME_HERE]:/home/intermine/intermine/ [PUT_YOUR_MINE_NAME_HERE]
@@ -46,7 +45,10 @@ You can use your custom mine for the builds.
 
   > Note: DO NOT add the trailing "/"
 
-#### Step 4
+#### Step 4 (optional)
+- Set the git url of your bio-sources repo to the env var `BIOSOURCES_REPO_URL`.
+
+#### Step 5
 - Follow [Adding data and project configs](#adding-data-and-project-configs) section to load data and config to your mine.
 
 
@@ -107,6 +109,10 @@ Available options are:
  - MINE_REPO_URL
    
    Add you mine github/gitlab url. It will be used to pull your mine inside build container
+
+ - BIOSOURCES_REPO_URL
+
+  Add you bio-sources repo github/gitlab url. It will be used to pull your bio sources inside build container    
 
  - IM_DATA_DIR
 
