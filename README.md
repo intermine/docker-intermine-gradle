@@ -37,7 +37,7 @@ Instead of building our test mine, you can launch your own custom InterMine by f
 
 | ENV variable  | Notes | Example |
 | ------------- | ------------- | ------------- |
-| MINE_REPO_URL | the git url of your mine | https://github.com/intermine/biotestmine  |
+| MINE_REPO_URL | the git url of your mine | https://github.com/intermine/flymine  |
 | MINE_NAME  | Name of your mine | FlyMine  |
 | IM_DATA_DIR | Data directory as used in your project XML file. | /data/flymine (no trailing slash "/") |
 
