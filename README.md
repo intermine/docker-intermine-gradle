@@ -54,7 +54,7 @@ We now need to tell Docker where the data is located.
 # - ./data/mine/data:/home/intermine/intermine/data
 ```
 
-3. Update `./data/mine/data` to be the full path to your data directory. 
+3. Update `./data/mine/data` to be the absolute path to your data directory. 
 
 ### Configs
 
