@@ -28,7 +28,7 @@ Wait for 10-15 mins for the build to finish. Then visit **`localhost:9999/biotes
 
 To determine whether build is finished or not, search for `intermine_builder exited with code 0` message in your docker-compose logs.
 
-## Customizing your mine instance
+## Deploy your own InterMine with Docker
 
 Instead of building our test mine, you can launch your own custom InterMine by following these instructions.
 
