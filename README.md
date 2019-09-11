@@ -34,6 +34,7 @@ Instead of building our test mine, you can launch your own custom InterMine by f
 
 ### Set Environment variables
 
+These will tell Docker where your mine is and its name.
 
 | ENV variable  | Notes | Example |
 | ------------- | ------------- | ------------- |
@@ -41,31 +42,27 @@ Instead of building our test mine, you can launch your own custom InterMine by f
 | MINE_NAME  | Name of your mine | FlyMine  |
 | IM_DATA_DIR | Data directory as used in your project XML file. | /data/flymine (no trailing slash "/") |
 
-If you do not have your mine publically hosted then you can also mount your mine files directly to the build container. Add your mine folder inside `./data/mine`  folder created by docker compose and uncomment the following line in the docker-compose.yml file. This is not recommended as the build will alter your source files.
-
-```bash
-# - ./data/mine/[PUT_YOUR_MINE_NAME_HERE]:/home/intermine/intermine/[PUT_YOUR_MINE_NAME_HERE]
-
-```
-
 ### Update data location
 
-Create the directory `./data/mine/data` in your **current working directory**. If you did the quickstart above, it will already have been created for you.
+We now need to tell Docker where the data is located.
 
-Uncomment the following line in intermine_builder section of your docker-compose file:
+1. Create the directory `./data/mine/data` in your **current working directory**. If you did the quickstart above, it will already have been created for you.
+
+2. Uncomment the following line in intermine_builder section of your docker-compose file:
 
 ```bash
 # - ./data/mine/data:/home/intermine/intermine/data
 ```
 
-Update "./data/mine/data" to be the full path to your data directory. 
+3. Update `./data/mine/data` to be the full path to your data directory. 
 
 ### Configs
 
 Add your mine property file (e.g. flymine.properties) to the **`./data/mine/config`** folder. 
 
-> In your properties file, do the following changes:
+In your properties file, do the following changes:
 
+```
       db.production.datasource.serverName=postgres
       db.production.datasource.databaseName=PSQL_DB_NAME
       db.production.datasource.user=PSQL_USER
@@ -83,6 +80,7 @@ Add your mine property file (e.g. flymine.properties) to the **`./data/mine/conf
 
       webapp.manager=TOMCAT_USER
       webapp.password=TOMCAT_PWD
+```
 
 The build will replace these placeholders with the generated usernames and passwords.
 
