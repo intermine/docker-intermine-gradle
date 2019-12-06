@@ -4,7 +4,7 @@ services:
     container_name: intermine_builder
     image: intermine/builder:latest
     volumes:
-      - ./data/mine/data:/home/intermine/intermine/data
+      # - ./data/mine/data:/home/intermine/intermine/data
       - ./data/mine/configs:/home/intermine/intermine/configs
       - ./data/mine/dump:/home/intermine/intermine/dump
       # - ./data/mine/[PUT_YOUR_MINE_NAME_HERE]:/home/intermine/intermine/[PUT_YOUR_MINE_NAME_HERE]      
