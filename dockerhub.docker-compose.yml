@@ -3,6 +3,7 @@ services:
   intermine_builder:
     container_name: intermine_builder
     image: intermine/builder:latest
+    user: "${UID:-1000}:${GID:-1000}"
     volumes:
       # - ./data/mine/data:/home/intermine/intermine/data
       - ./data/mine/configs:/home/intermine/intermine/configs
@@ -21,6 +22,7 @@ services:
   postgres:
     container_name: intermine_postgres
     image: intermine/postgres:latest
+    user: "${UID:-1000}:${GID:-1000}"
     volumes:
       - ./data/postgres:/var/lib/postgresql/data
 
@@ -30,6 +32,7 @@ services:
     environment:
       - MEM_OPTS=${MEM_OPTS:-"-Xmx2g -Xms1g"}
       - MINE_NAME=${MINE_NAME:-biotestmine}
+    user: "${UID:-1000}:${GID:-1000}"
     volumes:
       - ./data/solr:/opt/solr/server/solr/mycores
 
