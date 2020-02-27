@@ -37,6 +37,7 @@ services:
     environment:
       - MEM_OPTS=${MEM_OPTS:-"-Xmx2g -Xms1g"}
       - MINE_NAME=${MINE_NAME:-biotestmine}
+    user: ${UID:-1000}:${GID:-1000}
     volumes:
       - ./data/solr:/var/solr
 
