@@ -2,6 +2,8 @@
 
 set -e
 
+mkdir /home/intermine/.intermine
+
 cd /home/intermine/intermine
 
 # Empty log
@@ -9,8 +11,13 @@ echo "" > /home/intermine/intermine/build.progress
 
 echo "Starting build"
 echo $MINE_REPO_URL
-# Check if mine exists
-if [ ! -d ${MINE_NAME:-biotestmine} ]; then
+# Check if mine exists and is not empty
+if [ -d ${MINE_NAME:-biotestmine} ] && [ ! -z "$(ls -A ${MINE_NAME:-biotestmine})" ]; then
+    echo "$(date +%Y/%m/%d-%H:%M) Update ${MINE_NAME:-biotestmine} to newest version" #>> /home/intermine/intermine/build.progress
+    cd ${MINE_NAME:-biotestmine}
+    # git pull
+    cd /home/intermine/intermine
+else
     # echo "$(date +%Y/%m/%d-%H:%M) Clone ${MINE_NAME:-biotestmine}" #>> /home/intermine/intermine/build.progress
     if [ ! -z "$MINE_REPO_URL" ]; then
         echo "$(date +%Y/%m/%d-%H:%M) Clone ${MINE_NAME}"
@@ -23,11 +30,6 @@ if [ ! -d ${MINE_NAME:-biotestmine} ]; then
         echo "$(date +%Y/%m/%d-%H:%M) Update keyword_search.properties to use http://solr" #>> /home/intermine/intermine/build.progress
         sed -i 's/localhost/'${SOLR_HOST:-solr}'/g' ./biotestmine/dbmodel/resources/keyword_search.properties
     fi
-else
-    echo "$(date +%Y/%m/%d-%H:%M) Update ${MINE_NAME:-biotestmine} to newest version" #>> /home/intermine/intermine/build.progress
-    cd ${MINE_NAME:-biotestmine}
-    # git pull
-    cd /home/intermine/intermine
 fi
 
 # Copy project_build from intermine_scripts repo

@@ -58,8 +58,8 @@ RUN cpanm --force Ouch \
                 #  Digest::MD5 \
                 #  Log::Handler
 
-
-RUN mkdir /home/intermine && mkdir /home/intermine/.intermine && mkdir /home/intermine/intermine && mkdir /home/intermine/intermine/scripts
+RUN mkdir /home/intermine && mkdir /home/intermine/intermine
+RUN chmod -R 777 /home/intermine
 
 ENV MEM_OPTS="-Xmx1g -Xms500m"
 ENV GRADLE_OPTS="-server ${MEM_OPTS} -XX:+UseParallelGC -XX:SoftRefLRUPolicyMSPerMB=1 -XX:MaxHeapFreeRatio=99 -Dorg.gradle.daemon=false"
@@ -71,7 +71,8 @@ ENV TOMCAT_PWD="tomcat"
 ENV TOMCAT_PORT=8080
 ENV PGPORT=5432
 
-COPY ./build.sh /home/intermine/intermine/scripts
+COPY ./build.sh /home/intermine
+RUN chmod a+rx /home/intermine/build.sh
 WORKDIR /home/intermine/intermine
 
-CMD ["/bin/sh","/home/intermine/intermine/scripts/build.sh"]
+CMD ["/bin/sh","/home/intermine/build.sh"]
