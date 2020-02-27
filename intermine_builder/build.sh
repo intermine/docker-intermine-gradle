@@ -12,7 +12,7 @@ echo "" > /home/intermine/intermine/build.progress
 echo "Starting build"
 echo $MINE_REPO_URL
 # Check if mine exists and is not empty
-if [ -d ${MINE_NAME:-biotestmine} ] && [ ! -z "$(ls -A ${MINE_NAME:-biotestmine})" ]; then
+if [ -d ${MINE_NAME:-biotestmine} ] && [ ! -z "$(ls ${MINE_NAME:-biotestmine})" ]; then
     echo "$(date +%Y/%m/%d-%H:%M) Update ${MINE_NAME:-biotestmine} to newest version" #>> /home/intermine/intermine/build.progress
     cd ${MINE_NAME:-biotestmine}
     # git pull
