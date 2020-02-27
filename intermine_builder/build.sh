@@ -21,7 +21,11 @@ else
     # echo "$(date +%Y/%m/%d-%H:%M) Clone ${MINE_NAME:-biotestmine}" #>> /home/intermine/intermine/build.progress
     if [ ! -z "$MINE_REPO_URL" ]; then
         echo "$(date +%Y/%m/%d-%H:%M) Clone ${MINE_NAME}"
-        git clone ${MINE_REPO_URL} $MINE_NAME
+        git clone --depth=1 ${MINE_REPO_URL} tmprepo
+        # We just want the files.
+        rm -rf tmprepo/.git
+        rm tmprepo/.gitignore
+        mv -T tmprepo ${MINE_NAME}
         echo "$(date +%Y/%m/%d-%H:%M) Update keyword_search.properties to use http://solr" #>> /home/intermine/intermine/build.progress
         sed -i 's/localhost/'${SOLR_HOST:-solr}'/g' ./$MINE_NAME/dbmodel/resources/keyword_search.properties
     else
