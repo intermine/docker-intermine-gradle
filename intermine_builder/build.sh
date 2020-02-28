@@ -19,21 +19,14 @@ if [ -d ${MINE_NAME:-biotestmine} ] && [ ! -z "$(ls ${MINE_NAME:-biotestmine})" 
     cd /home/intermine/intermine
 else
     # echo "$(date +%Y/%m/%d-%H:%M) Clone ${MINE_NAME:-biotestmine}" #>> /home/intermine/intermine/build.progress
-    if [ ! -z "$MINE_REPO_URL" ]; then
-        echo "$(date +%Y/%m/%d-%H:%M) Clone ${MINE_NAME}"
-        git clone --depth=1 ${MINE_REPO_URL} tmprepo
-        # We just want the files.
-        rm -rf tmprepo/.git
-        rm tmprepo/.gitignore
-        mv -T tmprepo ${MINE_NAME}
-        echo "$(date +%Y/%m/%d-%H:%M) Update keyword_search.properties to use http://solr" #>> /home/intermine/intermine/build.progress
-        sed -i 's/localhost/'${SOLR_HOST:-solr}'/g' ./$MINE_NAME/dbmodel/resources/keyword_search.properties
-    else
-        echo "$(date +%Y/%m/%d-%H:%M) Clone biotestmine"
-        git clone https://github.com/intermine/biotestmine
-        echo "$(date +%Y/%m/%d-%H:%M) Update keyword_search.properties to use http://solr" #>> /home/intermine/intermine/build.progress
-        sed -i 's/localhost/'${SOLR_HOST:-solr}'/g' ./biotestmine/dbmodel/resources/keyword_search.properties
-    fi
+    echo "$(date +%Y/%m/%d-%H:%M) Clone ${MINE_NAME}"
+    git clone --depth=1 ${MINE_REPO_URL:-https://github.com/intermine/biotestmine} tmprepo
+    # We just want the files.
+    rm -rf tmprepo/.git
+    rm tmprepo/.gitignore
+    mv -T tmprepo ${MINE_NAME}
+    echo "$(date +%Y/%m/%d-%H:%M) Update keyword_search.properties to use http://solr" #>> /home/intermine/intermine/build.progress
+    sed -i 's/localhost/'${SOLR_HOST:-solr}'/g' ./${MINE_NAME:-biotestmine}/dbmodel/resources/keyword_search.properties
 fi
 
 # Copy project_build from intermine_scripts repo
