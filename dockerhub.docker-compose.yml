@@ -15,6 +15,8 @@ services:
       - MINE_REPO_URL=${MINE_REPO_URL:-}
       - IM_DATA_DIR=${IM_DATA_DIR:-DATA_DIR}
       - MEM_OPTS=${MEM_OPTS:-"-Xmx2g -Xms1g"}
+      - IM_REPO_URL=${IM_REPO_URL:-}
+      - IM_REPO_BRANCH=${IM_REPO_BRANCH:-}
     depends_on: 
       - postgres
       - solr
