@@ -3,16 +3,20 @@ services:
   intermine_builder:
     container_name: intermine_builder
     image: intermine/builder:latest
+    user: ${UID:-1000}:${GID:-1000}
     volumes:
       # - ./data/mine/data:/home/intermine/intermine/data
-      - ./data/mine/configs:/home/intermine/intermine/configs
       - ./data/mine/dump:/home/intermine/intermine/dump
-      # - ./data/mine/[PUT_YOUR_MINE_NAME_HERE]:/home/intermine/intermine/[PUT_YOUR_MINE_NAME_HERE]      
+      - ./data/mine/configs:/home/intermine/intermine/configs
+      # - ./data/mine/[PUT_YOUR_MINE_NAME_HERE]:/home/intermine/intermine/[PUT_YOUR_MINE_NAME_HERE]
+      - ./data/mine/biotestmine:/home/intermine/intermine/biotestmine
     environment:
       - MINE_NAME=${MINE_NAME:-biotestmine}
       - MINE_REPO_URL=${MINE_REPO_URL:-}
       - IM_DATA_DIR=${IM_DATA_DIR:-DATA_DIR}
       - MEM_OPTS=${MEM_OPTS:-"-Xmx2g -Xms1g"}
+      - IM_REPO_URL=${IM_REPO_URL:-}
+      - IM_REPO_BRANCH=${IM_REPO_BRANCH:-}
     depends_on: 
       - postgres
       - solr
@@ -21,6 +25,7 @@ services:
   postgres:
     container_name: intermine_postgres
     image: intermine/postgres:latest
+    user: ${UID:-1000}:${GID:-1000}
     volumes:
       - ./data/postgres:/var/lib/postgresql/data
 
@@ -30,14 +35,15 @@ services:
     environment:
       - MEM_OPTS=${MEM_OPTS:-"-Xmx2g -Xms1g"}
       - MINE_NAME=${MINE_NAME:-biotestmine}
+    user: ${UID:-1000}:${GID:-1000}
     volumes:
-      - ./data/solr:/opt/solr/server/solr/mycores
+      - ./data/solr:/var/solr
 
   tomcat:
     container_name: intermine_tomcat
     image: intermine/tomcat
     environment:
-      - MEM_OPTS=${MEM_OPTS:--Xmx1g -Xms500m}
+      - MEM_OPTS=${MEM_OPTS:-"-Xmx1g -Xms500m"}
     ports:
       - ${TOMCAT_HOST_PORT:-9999}:${TOMCAT_PORT:-8080}
 

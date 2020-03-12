@@ -9,6 +9,12 @@ You can use these docker images to create your own InterMine instance. You can l
 
 ## Quickstart
 
+If you're not logged in as root, you will need to create the volume directories which will be shared with the docker containers, to avoid permission errors. This can be done by using the convenience script.
+
+```bash
+./mkdatadirs.sh local.docker-compose.yml
+```
+
 Run the command to build the images locally and start an example InterMine instance - BioTestMine.
 
 ```bash
@@ -32,15 +38,20 @@ To determine whether build is finished or not, search for `intermine_builder exi
 
 Instead of building our test mine, you can launch your own custom InterMine by following these instructions.
 
-### Set Environment variables
+### Environment variables
 
-These will tell Docker where your mine is and its name.
+| ENV variable  | Description | Default | Example |
+| ------------- | ------------- | ------------- | ------------- |
+| MINE_REPO_URL | The Git URL of your mine | https://github.com/intermine/biotestmine | https://github.com/intermine/flymine |
+| MINE_NAME  | Name of your mine | biotestmine | FlyMine |
+| IM_DATA_DIR | Data directory as used in your project XML file. | `/data` | `/data/flymine` |
+| IM_REPO_URL | The Git URL of the InterMine to build | https://github.com/intermine/intermine | https://github.com/yourfork/intermine |
+| IM_REPO_BRANCH | The branch to checkout in IM_REPO_URL | master | dev |
+| TOMCAT_HOST_PORT | Tomcat will bind to this port on your host machine | 9999 | 1234 |
 
-| ENV variable  | Notes | Example |
-| ------------- | ------------- | ------------- |
-| MINE_REPO_URL | the git url of your mine | https://github.com/intermine/flymine  |
-| MINE_NAME  | Name of your mine | FlyMine  |
-| IM_DATA_DIR | Data directory as used in your project XML file. | /data/flymine (no trailing slash "/") |
+**Additional notes:**
+- At least one of *IM_REPO_URL* or *IM_REPO_BRANCH* need to be specified to trigger a custom build of InterMine. This build of InterMine will then be used to build your mine.
+- *IM_DATA_DIR* should not have a trailing slash (`/`)
 
 ### Update data location
 
@@ -92,12 +103,3 @@ MINE_NAME=humanmine
 MINE_REPO_URL=https://github.com/intermine/humanmine
 IM_DATA_DIR=/tmp/data
 ```
-
-Here are the ENV variables available.
-
-| ENV variable  | Notes | 
-| ------------- | ------------- |
-| MINE_REPO_URL | the git url of your mine | 
-| MINE_NAME  | Name of your mine |
-| IM_DATA_DIR | Data directory as used in your project XML file. This will be used for search and replace to fix data locations inside the build container.| 
-| TOMCAT_HOST_PORT  | the port of your host machine to which tomcat docker container binds to | 

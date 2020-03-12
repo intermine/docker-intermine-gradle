@@ -17,6 +17,8 @@ if [[ "${VERBOSE:-}" = "yes" ]]; then
     set -x
 fi
 
+/opt/docker-solr/scripts/init-var-solr
+
 . /opt/docker-solr/scripts/run-initdb
 
 /opt/docker-solr/scripts/precreate-core "$@"-search
