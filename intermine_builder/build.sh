@@ -13,6 +13,7 @@ if [ -d ${MINE_NAME:-biotestmine} ] && [ ! -z "$(ls -A ${MINE_NAME:-biotestmine}
     echo "$(date +%Y/%m/%d-%H:%M) Gradle: build webapp"
     echo "DO A CD"
     cd /home/intermine/intermine
+    cd ${MINE_NAME:-biotestmine}
     ./gradlew cargoDeployRemote
     sleep 60
     ./gradlew cargoRedeployRemote  --stacktrace
