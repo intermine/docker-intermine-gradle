@@ -11,6 +11,7 @@ echo "$(ls -A ${MINE_NAME:-biotestmine})"
 if [ -d ${MINE_NAME:-biotestmine} ] && [ ! -z "$(ls -A ${MINE_NAME:-biotestmine})" ]; then
     echo "$(date +%Y/%m/%d-%H:%M) Mine already exists"
     echo "$(date +%Y/%m/%d-%H:%M) Gradle: build webapp"
+    cd /home/intermine/intermine
     ./gradlew cargoDeployRemote
     sleep 60
     ./gradlew cargoRedeployRemote  --stacktrace
