@@ -22,8 +22,6 @@ fi
 
 set -e
 
-#mkdir /home/intermine/.intermine
-
 cd /home/intermine/intermine
 
 # Empty log

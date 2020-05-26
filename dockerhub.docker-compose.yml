@@ -9,6 +9,7 @@ services:
       - ./data/mine/dump:/home/intermine/intermine/dump
       - ./data/mine/configs:/home/intermine/intermine/configs
       - ./data/mine/packages:/home/intermine/.m2
+      - ./data/mine/intermine:/home/intermine/.intermine
       # - ./data/mine/[PUT_YOUR_MINE_NAME_HERE]:/home/intermine/intermine/[PUT_YOUR_MINE_NAME_HERE]
       - ./data/mine/biotestmine:/home/intermine/intermine/biotestmine
     environment:
