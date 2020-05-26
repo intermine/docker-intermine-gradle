@@ -22,7 +22,7 @@ fi
 
 set -e
 
-mkdir /home/intermine/.intermine
+#mkdir /home/intermine/.intermine
 
 cd /home/intermine/intermine
 
