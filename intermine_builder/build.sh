@@ -1,17 +1,8 @@
 #!/bin/bash
 
-# Check if Mine exists
-echo "HELLO FROM DOCKER"
-echo "MINE_NAME:-biotestmine"
-echo ${MINE_NAME:-biotestmine}
-if [ -d ${MINE_NAME:-biotestmine} ]; then
-    echo "Condition succeed"
-fi
-echo "$(ls -A ${MINE_NAME:-biotestmine})"
 if [ -d ${MINE_NAME:-biotestmine} ] && [ ! -z "$(ls -A ${MINE_NAME:-biotestmine})" ]; then
     echo "$(date +%Y/%m/%d-%H:%M) Mine already exists"
     echo "$(date +%Y/%m/%d-%H:%M) Gradle: build webapp"
-    echo "DO A CD"
     cd /home/intermine/intermine
     cd ${MINE_NAME:-biotestmine}
     ./gradlew cargoDeployRemote
