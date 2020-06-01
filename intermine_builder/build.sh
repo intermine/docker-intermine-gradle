@@ -1,8 +1,17 @@
 #!/bin/bash
 
-set -e
+if [ -d ${MINE_NAME:-biotestmine} ] && [ ! -z "$(ls -A ${MINE_NAME:-biotestmine})" ]; then
+    echo "$(date +%Y/%m/%d-%H:%M) Mine already exists"
+    echo "$(date +%Y/%m/%d-%H:%M) Gradle: build webapp"
+    cd /home/intermine/intermine
+    cd ${MINE_NAME:-biotestmine}
+    ./gradlew cargoDeployRemote
+    sleep 60
+    ./gradlew cargoRedeployRemote  --stacktrace
+    exit 0
+fi
 
-mkdir /home/intermine/.intermine
+set -e
 
 cd /home/intermine/intermine
 
