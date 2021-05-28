@@ -1,4 +1,4 @@
-FROM alpine:edge
+FROM alpine:3.12.5
 LABEL maintainer="Ank"
 
 ENV JAVA_HOME="/usr/lib/jvm/default-jvm"
