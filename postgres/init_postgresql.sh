@@ -1,6 +1,9 @@
 #!/bin/bash
 set -e
 
+# Note: This script is only run if the data directory is empty
+# (i.e., not if the volume has been populated).
+
 cd /opt
 
 # initdb requires the user to be present in `/etc/passwd`, but we only know
@@ -25,4 +28,15 @@ psql -v ON_ERROR_STOP=1 --username ${PGUSER:-postgres} <<-EOSQL
     update pg_database set datistemplate = TRUE where datname = 'template1';
     \c template1
     update pg_database set datallowconn = FALSE where datname = 'template0';
+
+    -- Create Databases
+    ALTER USER ${PGUSER:-postgres} WITH SUPERUSER;
+    CREATE DATABASE mine;
+    CREATE DATABASE items-mine;
+    CREATE DATABASE userprofile-mine;
+    GRANT ALL PRIVILEGES ON DATABASE mine to ${PGUSER:-postgres};
+    GRANT ALL PRIVILEGES ON DATABASE items-mine to ${PGUSER:-postgres};
+    GRANT ALL PRIVILEGES ON DATABASE userprofile-mine to ${PGUSER:-postgres};
 EOSQL
+# These would usually contain the name of the mine instead of "mine" but we
+# simplify it as we'll only have one database per mine instance.
