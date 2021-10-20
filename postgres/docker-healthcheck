@@ -1,10 +1,10 @@
 #!/bin/bash
 set -eo pipefail
 
-host="$(PGHOST:-postgres)"
-port="$(PGPORT:-5432)"
+host="${PGHOST:-intermine-postgres}"
+port="${PGPORT:-5432}"
 user="${PSQL_USER:-postgres}"
-db="${MINE_NAME:-biotestmine}"
+db="mine"
 export PGPASSWORD="${PSQL_PWD:-postgres}"
 
 args=(
