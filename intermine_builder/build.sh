@@ -85,7 +85,7 @@ if [ ! -f /home/intermine/.intermine/${MINE_NAME:-biotestmine}.properties ]; the
         cp /home/intermine/intermine/configs/${MINE_NAME:-biotestmine}.properties /home/intermine/.intermine/
     fi
 
-    echo -e "$(date +%Y/%m/%d-%H:%M) Set properties in .intermine/${MINE_NAME:-biotestmine}.properties to\nPSQL_DB_NAME\tbiotestmine\nPSQL_USER\t$PSQL_USER\nPSQL_PWD\t$PSQL_PWD\nTOMCAT_USER\t$TOMCAT_USER\nTOMCAT_PWD\t$TOMCAT_PWD\nGRADLE_OPTS\t$GRADLE_OPTS" #>> /home/intermine/intermine/build.progress
+    echo -e "$(date +%Y/%m/%d-%H:%M) Set properties in .intermine/${MINE_NAME:-biotestmine}.properties to\nPSQL_DB_NAME\t${MINE_NAME}\nPSQL_USER\t$PSQL_USER\nPSQL_PWD\t$PSQL_PWD\nTOMCAT_USER\t$TOMCAT_USER\nTOMCAT_PWD\t$TOMCAT_PWD\nGRADLE_OPTS\t$GRADLE_OPTS" #>> /home/intermine/intermine/build.progress
 
     #sed -i "s/PSQL_PORT/$PGPORT/g" /home/intermine/.intermine/${MINE_NAME:-biotestmine}.properties
     sed -i "s/PSQL_DB_NAME/${MINE_NAME:-biotestmine}/g" /home/intermine/.intermine/${MINE_NAME:-biotestmine}.properties
@@ -138,7 +138,7 @@ else
     if [ ! -d /home/intermine/intermine/data/malaria ]; then
         echo "$(date +%Y/%m/%d-%H:%M) Copy malria-data to ~/data" #>> /home/intermine/intermine/build.progress
         mkdir -p /home/intermine/intermine/data/
-        cp /home/intermine/intermine/biotestmine/data/malaria-data.tar.gz /home/intermine/intermine/data/
+        cp /home/intermine/intermine/${MINE_NAME:-biotestmine}/data/malaria-data.tar.gz /home/intermine/intermine/data/
         cd /home/intermine/intermine/data/
         tar -xf malaria-data.tar.gz
         rm malaria-data.tar.gz
